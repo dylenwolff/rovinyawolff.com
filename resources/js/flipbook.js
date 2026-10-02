@@ -42,6 +42,7 @@ if (root) {
             let book = null;
             let mobileIndex = 0;
             let mobileBusy = false;
+            let mobileMotionTimer = null;
 
             stage.style.width = `${isSpread || isMobile ? width * 2 : width}px`;
             stage.style.height = `${height}px`;
@@ -120,6 +121,17 @@ if (root) {
             const goMobile = (nextIndex) => {
                 nextIndex = Math.max(0, Math.min(pdf.numPages - 1, nextIndex));
                 if (nextIndex === mobileIndex || mobileBusy) return;
+                const crossesForwardIntoNextSpread = mobileIndex > 0
+                    && mobileIndex % 2 === 0
+                    && nextIndex === mobileIndex + 1;
+                const motionDuration = crossesForwardIntoNextSpread ? 960 : 680;
+                stage.style.setProperty('--mobile-slide-duration', `${motionDuration}ms`);
+                stage.style.setProperty('--mobile-slide-easing', crossesForwardIntoNextSpread
+                    ? 'cubic-bezier(.65, 0, .35, 1)'
+                    : 'cubic-bezier(.22, .72, .18, 1)');
+                mobileBusy = true;
+                window.clearTimeout(mobileMotionTimer);
+                mobileMotionTimer = window.setTimeout(() => { mobileBusy = false; }, motionDuration + 40);
                 mobileIndex = nextIndex;
                 stage.style.setProperty('--mobile-book-x', `${mobilePosition(mobileIndex)}px`);
                 renderAround(mobileIndex);
