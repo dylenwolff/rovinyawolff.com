@@ -120,6 +120,30 @@ if (root) {
                 updateControls(index);
             };
 
+            const cloneRenderedPage = (page) => {
+                const clone = page.cloneNode(true);
+                const source = page.querySelector('canvas');
+                const target = clone.querySelector('canvas');
+                if (source && target) {
+                    target.width = source.width;
+                    target.height = source.height;
+                    target.getContext('2d').drawImage(source, 0, 0);
+                }
+                return clone;
+            };
+
+            const createTurnLayer = (movingForward) => {
+                const layer = document.createElement('div');
+                layer.className = `mobile-turn-layer ${movingForward ? 'turns-forward' : 'turns-backward'}`;
+                layer.style.width = `${stage.children.length * width}px`;
+                layer.style.height = `${height}px`;
+                layer.style.setProperty('--turn-start-x', `${mobilePosition(mobileIndex)}px`);
+                [...stage.children].forEach((page) => layer.appendChild(cloneRenderedPage(page)));
+                viewport.appendChild(layer);
+                requestAnimationFrame(() => requestAnimationFrame(() => layer.classList.add('is-active')));
+                return layer;
+            };
+
             const goMobile = (nextIndex) => {
                 nextIndex = Math.max(0, Math.min(pdf.numPages - 1, nextIndex));
                 if (nextIndex === mobileIndex || mobileBusy) return;
@@ -134,14 +158,16 @@ if (root) {
                     return;
                 }
                 mobileBusy = true;
-                stage.classList.add('is-changing-spread');
-                stage.style.setProperty('--mobile-book-x', `${movingForward ? -(width * 2) : viewport.clientWidth}px`);
+                const turnLayer = createTurnLayer(movingForward);
+                mobileIndex = nextIndex;
+                stage.style.transition = 'none';
+                mountMobileSpread(mobileIndex);
+                stage.getBoundingClientRect();
+                stage.style.removeProperty('transition');
                 window.setTimeout(() => {
-                    mobileIndex = nextIndex;
-                    stage.classList.remove('is-changing-spread');
-                    mountMobileSpread(mobileIndex, movingForward);
+                    turnLayer.remove();
                     mobileBusy = false;
-                }, 360);
+                }, 720);
             };
 
             setStatus('Opening publication…');
