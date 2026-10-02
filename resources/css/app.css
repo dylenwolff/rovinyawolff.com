@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@custom-variant dark (&:where(.dark, .dark *));
+@theme { --font-sans: 'Aptos','Segoe UI',ui-sans-serif,system-ui,sans-serif; --font-display: Georgia,'Times New Roman',serif; }
+@layer base { * { border-color: rgb(79 54 72 / .16); } ::selection { background:#6f3b67;color:white; } a,button { outline-offset:4px; } a:focus-visible,button:focus-visible { outline:2px solid #e67866; } }
+@layer components {
+ .site-container { @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10; }
+ .nav-link { @apply relative py-2 transition hover:text-[#8d4f7f] dark:hover:text-[#f4a696]; }
+ .nav-link.active::after { content:''; @apply absolute inset-x-0 bottom-0 h-px bg-[#e67866]; }
+ .mobile-link { @apply rounded-xl px-4 py-3 hover:bg-[#6f3b67]/10 dark:hover:bg-white/5; }
+ .icon-button { @apply inline-grid size-10 place-items-center rounded-full border bg-white/70 transition hover:border-[#e67866] hover:text-[#8d4f7f] dark:bg-white/5; }
+ .button-primary { @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#6f3b67] px-6 text-sm font-bold text-white shadow-lg shadow-[#6f3b67]/15 transition hover:-translate-y-0.5 hover:bg-[#875078]; }
+ .button-secondary { @apply inline-flex min-h-12 items-center justify-center rounded-full border bg-white/50 px-6 text-sm font-bold transition hover:-translate-y-0.5 hover:border-[#e67866] dark:bg-white/5; }
+ .eyebrow { @apply text-xs font-bold uppercase tracking-[.22em] text-[#8d4f7f] dark:text-[#f4a696]; }
+ .display-title { @apply font-[family-name:var(--font-display)] text-5xl leading-[.98] tracking-[-.04em] sm:text-6xl lg:text-7xl; }
+ .section-title { @apply font-[family-name:var(--font-display)] text-4xl leading-tight tracking-[-.035em] sm:text-5xl; }
+ .section-copy { @apply mt-5 max-w-2xl text-lg leading-8 text-[#6d6269] dark:text-[#cfc4ca]; }
+ .project-card { @apply overflow-hidden rounded-[2rem] border bg-white/65 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#6f3b67]/10 dark:bg-white/[.045]; }
+ .service-card { @apply rounded-[2rem] border bg-white/55 p-7 dark:bg-white/[.04]; }
+ .contact-label { @apply grid gap-2 text-sm font-bold; }
+ .contact-input { @apply w-full rounded-2xl border bg-white/75 px-4 py-3.5 font-normal outline-none transition placeholder:text-[#9b8e96] focus:border-[#e67866] focus:ring-4 focus:ring-[#e67866]/10 dark:bg-white/5; }
+}
+.paper-noise { background-image:radial-gradient(rgb(111 59 103 / .07) .7px,transparent .7px);background-size:9px 9px; }
+.editorial-gradient { background:radial-gradient(circle at 15% 20%,rgb(230 120 102 / .18),transparent 28%),radial-gradient(circle at 88% 65%,rgb(111 59 103 / .16),transparent 32%); }
+.book-shadow { box-shadow:-18px 22px 55px rgb(61 34 54 / .22); }
+.flipbook-shell:fullscreen { background:#211b26;padding:1rem; }
+.flipbook-page { background:white;overflow:hidden; }
+.flipbook-page canvas { width:100%;height:100%;object-fit:contain; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important; } }

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+app_dir=/home/dylenaw/web/dylenwolff.com/public_html/app
+deploy_key=/home/dylenaw/.ssh/id_ed25519_dylenwolff_com_deploy
+
+cd "$app_dir"
+
+exec 9>/tmp/dylenwolff-production-deploy.lock
+if ! flock -n 9; then
+    echo "Another deployment is already running." >&2
+    exit 1
+fi
+
+cleanup() {
+    php artisan up >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+export GIT_SSH_COMMAND="ssh -i $deploy_key -o IdentitiesOnly=yes"
+
+git pull --ff-only origin main
+composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+php artisan livewire:publish --assets
+npm ci
+npm run build
+
+php artisan down --retry=60
+php artisan migrate --force
+php artisan storage:link
+php artisan optimize
+php artisan up
+
+trap - EXIT
+echo "Production deployment complete: $(git rev-parse --short HEAD)"
