@@ -136,11 +136,13 @@ if (root) {
                 stage.classList.add('is-fading-out');
                 window.setTimeout(() => {
                     mobileIndex = nextIndex;
+                    stage.style.transition = 'none';
                     mountMobileSpread(mobileIndex);
                     stage.classList.add('is-fading-in');
                     stage.getBoundingClientRect();
                     requestAnimationFrame(() => requestAnimationFrame(() => {
-                        stage.classList.remove('is-fading-in');
+                        stage.style.removeProperty('transition');
+                        requestAnimationFrame(() => stage.classList.remove('is-fading-in'));
                     }));
                     window.setTimeout(() => { mobileBusy = false; }, 320);
                 }, 260);
