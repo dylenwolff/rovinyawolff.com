@@ -13,19 +13,9 @@ stage.style.overflow = 'visible';
     try {
         const pdfUrl = root?.getAttribute('data-pdf-url');
         if (!pdfUrl) throw new Error('Missing PDF URL for the flipbook.');
-        const slug = window.location.pathname.split('/').filter(Boolean).pop();
-        const manifestUrl = `/storage/projects/pages/${slug}/manifest.json`;
-        let manifest = null;
-        try {
-            const response = await fetch(manifestUrl);
-            if (response.ok) manifest = await response.json();
-        } catch (_) {
-            manifest = null;
-        }
-        const pdf = manifest ? null : await pdfjsLib.getDocument({ url: pdfUrl }).promise;
-        const firstPage = pdf ? await pdf.getPage(1) : null;
-        const base = firstPage ? firstPage.getViewport({ scale: 1 }) : { width: manifest.width, height: manifest.height };
-        const pageCount = manifest ? manifest.pages.length : pdf.numPages;
+        const pdf = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+        const firstPage = await pdf.getPage(1);
+        const base = firstPage.getViewport({ scale: 1 });
         const ratio = base.height / base.width;
         const isMobile = window.matchMedia('(max-width: 767px)').matches;
         const isSpread = !isMobile && stage.clientWidth > 800;
@@ -42,26 +32,19 @@ stage.style.overflow = 'visible';
         }
         const pages = [];
         const renderJobs = new Map();
-        for (let number = 1; number <= pageCount; number += 1) {
+        for (let number = 1; number <= pdf.numPages; number += 1) {
             const element = document.createElement('div');
             element.className = 'flipbook-page';
-            const media = document.createElement(manifest ? 'img' : 'canvas');
-            media.setAttribute('aria-label', `Publication page ${number}`);
-            if (manifest) media.alt = `Publication page ${number}`;
-            element.appendChild(media);
+            const canvas = document.createElement('canvas');
+            canvas.setAttribute('aria-label', `Publication page ${number}`);
+            element.appendChild(canvas);
             pages.push(element);
         }
 
         const renderPage = (index) => {
-            if (index < 0 || index >= pageCount) return Promise.resolve();
+            if (index < 0 || index >= pdf.numPages) return Promise.resolve();
             if (renderJobs.has(index)) return renderJobs.get(index);
             const job = (async () => {
-                if (manifest) {
-                    const image = pages[index].querySelector('img');
-                    image.src = new URL(manifest.pages[index], manifestUrl).href;
-                    await image.decode();
-                    return;
-                }
                 const page = index === 0 ? firstPage : await pdf.getPage(index + 1);
                 const natural = page.getViewport({ scale: 1 });
                 const scale = Math.min(2, (width * devicePixelRatio) / natural.width);
@@ -88,7 +71,7 @@ stage.style.overflow = 'visible';
             if (!pageLabel) return;
             const page = book.getCurrentPageIndex() + 1;
             const side = page === 1 ? 'Cover' : (page % 2 === 0 ? 'Left page' : 'Right page');
-            pageLabel.textContent = isMobile ? `${side} · ${page} of ${pageCount}` : `Page ${page} of ${pageCount}`;
+            pageLabel.textContent = isMobile ? `${side} · ${page} of ${pdf.numPages}` : `Page ${page} of ${pdf.numPages}`;
         };
         book.on('flip', () => {
             const index = book.getCurrentPageIndex();
