@@ -160,10 +160,16 @@ if (root) {
                 mobileBusy = true;
                 const turnLayer = createTurnLayer(movingForward);
                 mobileIndex = nextIndex;
+                const targetPosition = mobilePosition(mobileIndex);
+                const entryOffset = movingForward ? width - mobilePeek : -(width - mobilePeek);
                 stage.style.transition = 'none';
                 mountMobileSpread(mobileIndex);
+                stage.style.setProperty('--mobile-book-x', `${targetPosition + entryOffset}px`);
                 stage.getBoundingClientRect();
                 stage.style.removeProperty('transition');
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    stage.style.setProperty('--mobile-book-x', `${targetPosition}px`);
+                }));
                 window.setTimeout(() => {
                     turnLayer.remove();
                     mobileBusy = false;
