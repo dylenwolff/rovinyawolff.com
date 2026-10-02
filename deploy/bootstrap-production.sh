@@ -7,11 +7,11 @@ deploy_key=/home/rovinyawolff/.ssh/rovinyawolff_github
 
 cd "$app_dir"
 
+db_password=$(openssl rand -base64 30 | tr -dc A-Za-z0-9 | head -c 28)
 if ! /usr/local/hestia/bin/v-list-databases rovinyawolff plain | awk '{print $1}' | grep -qx rovinyawolff_portfolio; then
-    db_password=$(openssl rand -base64 30 | tr -dc A-Za-z0-9 | head -c 28)
     /usr/local/hestia/bin/v-add-database rovinyawolff portfolio portfolio "$db_password" mysql localhost utf8mb4
 else
-    db_password=$(/usr/local/hestia/bin/v-list-database rovinyawolff portfolio json | php -r '$data=json_decode(stream_get_contents(STDIN), true); $record=reset($data); echo $record["PASSWORD"] ?? "";')
+    /usr/local/hestia/bin/v-change-database-password rovinyawolff portfolio "$db_password"
 fi
 
 if [[ ! -f .env ]]; then
@@ -22,10 +22,19 @@ if [[ ! -f .env ]]; then
         -e 's|^APP_URL=.*|APP_URL=https://rovinyawolff.com|' \
         -e 's|^ADMIN_EMAIL=.*|ADMIN_EMAIL=rovinyask@gmail.com|' \
         -e 's|^DB_CONNECTION=.*|DB_CONNECTION=mysql|' \
-        -e 's|^DB_HOST=.*|DB_HOST=127.0.0.1|' \
-        -e 's|^DB_PORT=.*|DB_PORT=3306|' \
-        -e 's|^DB_DATABASE=.*|DB_DATABASE=rovinyawolff_portfolio|' \
-        -e 's|^DB_USERNAME=.*|DB_USERNAME=rovinyawolff_portfolio|' \
+        -e 's|^# *DB_HOST=.*|DB_HOST=127.0.0.1|' \
+        -e 's|^# *DB_PORT=.*|DB_PORT=3306|' \
+        -e 's|^# *DB_DATABASE=.*|DB_DATABASE=rovinyawolff_portfolio|' \
+        -e 's|^# *DB_USERNAME=.*|DB_USERNAME=rovinyawolff_portfolio|' \
+        -e "s|^# *DB_PASSWORD=.*|DB_PASSWORD=$db_password|" \
+        .env
+else
+    sed -i \
+        -e 's|^# *DB_HOST=.*|DB_HOST=127.0.0.1|' \
+        -e 's|^# *DB_PORT=.*|DB_PORT=3306|' \
+        -e 's|^# *DB_DATABASE=.*|DB_DATABASE=rovinyawolff_portfolio|' \
+        -e 's|^# *DB_USERNAME=.*|DB_USERNAME=rovinyawolff_portfolio|' \
+        -e "s|^# *DB_PASSWORD=.*|DB_PASSWORD=$db_password|" \
         -e "s|^DB_PASSWORD=.*|DB_PASSWORD=$db_password|" \
         .env
 fi
