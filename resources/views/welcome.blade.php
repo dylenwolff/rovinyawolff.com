@@ -1,41 +1,40 @@
 @extends('layouts.site')
-@section('description','Publication and social media design by Rovinya Wolff. Distinct visual experiences for pages, campaigns, and communities.')
+@section('description','Rovinya Wolff is an editorial and visual designer creating publications, directories, magazines, and campaign design.')
 @section('content')
-<section class="hero-live relative min-h-screen overflow-hidden bg-[#131014] text-white" data-hero>
-    <div class="hero-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div class="site-container relative z-10 flex min-h-screen flex-col justify-center pb-16 pt-32">
-        <div class="mx-auto max-w-5xl text-center" data-reveal>
-            <p class="eyebrow text-[#ffc7e8]">{{ $settings->professional_title }} • Colombo</p>
-            <h1 class="mt-6 text-[clamp(4rem,11vw,9.5rem)] font-black leading-[.78] tracking-[-.075em]">IDEAS THAT<br><span class="gradient-word">MOVE.</span></h1>
-            <p class="mx-auto mt-8 max-w-2xl text-lg leading-8 text-white/65 sm:text-xl">I turn stories, communities, and campaigns into visual experiences people want to notice, explore, and remember.</p>
-        </div>
-
-        <div class="discipline-stage mx-auto mt-14 grid w-full max-w-6xl items-center gap-7 lg:grid-cols-[1fr_1.15fr_1fr]" data-tilt-stage>
-            <a href="{{ route('work.publications') }}" class="discipline-copy group text-center lg:text-right" data-reveal><span class="text-xs font-bold uppercase tracking-[.22em] text-[#b9ffec]">Pages with presence</span><h2 class="mt-2 text-4xl font-black tracking-[-.04em] sm:text-5xl">Publication<br>design</h2><p class="mt-3 text-sm leading-6 text-white/55">Magazines, club directories, reports, and commemorative books.</p><span class="mt-5 inline-flex text-sm font-bold text-[#b9ffec]">Explore publications ↗</span></a>
-
-            <a href="{{ route('work') }}" class="visual-stack" aria-label="Explore all work" data-tilt>
-                <div class="visual-card visual-card-back"><span>RW</span><small>VISUAL STORIES</small></div>
-                <div class="visual-card visual-card-mid"><div class="poster-orbit"></div><strong>MAKE IT<br>MEAN<br>SOMETHING.</strong></div>
-                <div class="visual-card visual-card-front"><span class="text-[10px] tracking-[.25em]">SELECTED WORK</span><b>R</b><small>ROVINYA WOLFF</small></div>
-            </a>
-
-            <a href="{{ route('work.social') }}" class="discipline-copy group text-center lg:text-left" data-reveal><span class="text-xs font-bold uppercase tracking-[.22em] text-[#ffd2a8]">Designed to connect</span><h2 class="mt-2 text-4xl font-black tracking-[-.04em] sm:text-5xl">Social<br>design</h2><p class="mt-3 text-sm leading-6 text-white/55">Campaigns, posters, announcements, and visual content systems.</p><span class="mt-5 inline-flex text-sm font-bold text-[#ffd2a8]">Explore campaigns ↗</span></a>
-        </div>
-        <div class="mt-16 flex flex-wrap justify-center gap-3"><a href="{{ route('work') }}" class="button-primary bg-white text-[#171318] hover:bg-[#ffc7e8]">View my work</a><a href="{{ route('contact') }}" class="button-secondary border-white/20 bg-white/5 text-white">Start a project</a></div>
+<section class="editorial-hero">
+  <div class="site-container hero-grid">
+    <div class="hero-copy" data-reveal>
+      <p class="kicker">INDEPENDENT DESIGNER · COLOMBO</p>
+      <h1>Stories,<br><em>shaped</em><br>visually.</h1>
+      <p class="hero-intro">I transform information, people, and purpose into publications and campaigns that feel clear, distinctive, and worth remembering.</p>
+      <div class="mt-8 flex flex-wrap gap-3"><a class="button-primary" href="{{ route('work') }}">Explore the work</a><a class="button-text" href="{{ route('contact') }}">Discuss a project <span>↗</span></a></div>
     </div>
+    <div class="cover-stage" data-cover-stage aria-label="Selected publication covers">
+      <figure class="cover-card cover-a"><img src="{{ asset('images/portfolio/novara-cover.jpg') }}" alt="Novara magazine cover designed by Rovinya Wolff"><figcaption>NOVARA · 2026</figcaption></figure>
+      <figure class="cover-card cover-b"><img src="{{ asset('images/portfolio/district-directory-cover.jpg') }}" alt="District Directory cover designed by Rovinya Wolff"><figcaption>DISTRICT DIRECTORY</figcaption></figure>
+      <figure class="cover-card cover-c"><img src="{{ asset('images/portfolio/md-pulse-cover.jpg') }}" alt="MD Pulse magazine cover designed by Rovinya Wolff"><figcaption>MD PULSE</figcaption></figure>
+      <span class="stage-note">SELECTED EDITORIAL WORK<br>2025 / 2026</span>
+    </div>
+  </div>
+  <div class="hero-index"><span>PUBLICATIONS</span><i></i><span>CAMPAIGNS</span><i></i><span>SOCIAL STORIES</span><i></i><span>DIRECTORIES</span></div>
 </section>
 
-<div class="marquee" aria-hidden="true"><div><span>PUBLICATION DESIGN</span><i>✦</i><span>SOCIAL MEDIA</span><i>✦</i><span>POSTERS</span><i>✦</i><span>VISUAL STORIES</span><i>✦</i><span>PUBLICATION DESIGN</span><i>✦</i><span>SOCIAL MEDIA</span></div></div>
+<section class="manifesto-section"><div class="site-container manifesto-grid"><p class="section-number">01 / APPROACH</p><div data-reveal><h2>Design that gives<br>information <em>a voice.</em></h2><p>Rovinya’s work moves between detailed editorial systems and immediate campaign communication. The thread connecting both is thoughtful hierarchy, expressive imagery, and a strong sense of occasion.</p></div></div></section>
 
-<section class="site-container py-24 sm:py-32"><div class="grid gap-12 lg:grid-cols-[.75fr_1.25fr]"><div data-reveal><p class="eyebrow">The work</p><h2 class="mt-4 text-5xl font-black leading-[.9] tracking-[-.055em] sm:text-7xl">Two worlds.<br><span class="font-[family-name:var(--font-display)] font-normal italic text-[#9d3f78]">One visual voice.</span></h2><p class="section-copy">Some stories deserve to unfold page by page. Others need to make an impact in a second. I design for both.</p></div><div class="grid gap-5 sm:grid-cols-2">
-<a href="{{ route('work.publications') }}" class="world-card world-publications" data-reveal><span>01 / PUBLICATIONS</span><div class="mini-book"><i></i><i></i><i></i></div><h3>Stories you can hold onto.</h3><p>Editorial systems with rhythm, hierarchy, and character.</p><b>See the books →</b></a>
-<a href="{{ route('work.social') }}" class="world-card world-social" data-reveal><span>02 / SOCIAL</span><div class="mini-grid"><i></i><i></i><i></i><i></i></div><h3>Ideas built to stop the scroll.</h3><p>Flexible visuals that make campaigns feel connected.</p><b>See the campaigns →</b></a>
-</div></div></section>
+<section class="work-preview">
+  <div class="site-container"><div class="section-heading" data-reveal><div><p class="kicker">SELECTED WORK</p><h2>Made page by page.<br>Seen all at once.</h2></div><a href="{{ route('work') }}">View the full archive <span>↗</span></a></div>
+  <div class="editorial-grid">
+  @forelse($projects as $project)
+    <article class="editorial-project" data-reveal><a href="{{ route('work.show',$project) }}"><div class="project-visual">@if($project->image_path)<img src="{{ asset('storage/'.$project->image_path) }}" alt="{{ $project->title }}">@else<div class="fallback-cover"><span>{{ mb_substr($project->title,0,1) }}</span></div>@endif</div><div class="project-meta"><div><small>{{ $project->category }}</small><h3>{{ $project->title }}</h3></div><span>↗</span></div></a></article>
+  @empty
+    <article class="editorial-project project-tall" data-reveal><a href="{{ route('work.publications') }}"><div class="project-visual"><img src="{{ asset('images/portfolio/novara-cover.jpg') }}" alt="Novara magazine"></div><div class="project-meta"><div><small>MAGAZINE DESIGN</small><h3>Novara</h3></div><span>↗</span></div></a></article>
+    <article class="editorial-project project-wide" data-reveal><a href="{{ route('work.publications') }}"><div class="project-visual"><img src="{{ asset('images/portfolio/district-directory-cover.jpg') }}" alt="District Directory"></div><div class="project-meta"><div><small>DIRECTORY DESIGN</small><h3>District Directory 2026/27</h3></div><span>↗</span></div></a></article>
+    <article class="editorial-project project-tall" data-reveal><a href="{{ route('work.publications') }}"><div class="project-visual"><img src="{{ asset('images/portfolio/md-pulse-cover.jpg') }}" alt="MD Pulse magazine"></div><div class="project-meta"><div><small>EDITORIAL SERIES</small><h3>MD Pulse</h3></div><span>↗</span></div></a></article>
+  @endforelse
+  </div></div>
+</section>
 
-<section class="overflow-hidden bg-[#151217] py-24 text-white sm:py-32"><div class="site-container"><div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between" data-reveal><div><p class="eyebrow text-[#ffc7e8]">Selected work</p><h2 class="mt-4 text-5xl font-black tracking-[-.055em] sm:text-7xl">Made to stand out.</h2></div><a href="{{ route('work') }}" class="font-bold text-[#b9ffec]">View the full portfolio ↗</a></div>
-<div class="project-ribbon mt-14">@forelse($projects as $project)<a href="{{ route('work.show',$project) }}" class="living-project" data-reveal>@if($project->image_path)<img src="{{ asset('storage/'.$project->image_path) }}" alt="{{ $project->title }}" loading="lazy">@else<div class="project-placeholder"><i></i><strong>{{ $project->title }}</strong></div>@endif<div><small>{{ $project->category }}</small><h3>{{ $project->title }}</h3></div></a>@empty
-<a href="{{ route('work.publications') }}" class="living-project demo-one"><div class="project-placeholder"><i></i><strong>Publication<br>stories</strong></div><div><small>MAGAZINES & DIRECTORIES</small><h3>Designed page by page</h3></div></a><a href="{{ route('work.social') }}" class="living-project demo-two"><div class="project-placeholder"><i></i><strong>Social<br>energy</strong></div><div><small>CAMPAIGNS & POSTERS</small><h3>Visuals that connect</h3></div></a>
-@endforelse</div></div></section>
+<section class="disciplines"><div class="site-container"><p class="section-number">02 / DISCIPLINES</p><div class="discipline-row"><a href="{{ route('work.publications') }}"><span>01</span><h2>Publication<br>design</h2><p>Magazines, directories, newsletters, reports, and long-form editorial systems.</p><b>Explore publications ↗</b></a><a href="{{ route('work.social') }}"><span>02</span><h2>Campaign &<br>social design</h2><p>Event identities, posters, social series, and visual storytelling for communities.</p><b>Explore campaigns ↗</b></a></div></div></section>
 
-<section class="site-container py-24 sm:py-32"><div class="cta-alive" data-reveal><div class="cta-orb"></div><p class="eyebrow relative z-10 text-[#4b2742]">Let’s make something alive</p><h2 class="relative z-10 mt-5 max-w-4xl text-5xl font-black leading-[.93] tracking-[-.06em] sm:text-7xl">Your next idea deserves more than a template.</h2><div class="relative z-10 mt-8 flex flex-wrap gap-3"><a class="button-primary" href="{{ route('contact') }}">Tell me about it</a><a class="button-secondary" href="{{ route('about') }}">Meet Rovinya</a></div></div></section>
+<section class="closing-story"><div class="site-container"><div class="closing-panel" data-reveal><p class="kicker">HAVE A STORY TO SHARE?</p><h2>Let’s make it<br><em>matter visually.</em></h2><a class="button-primary" href="{{ route('contact') }}">Start a conversation</a><span class="closing-mark">R</span></div></div></section>
 @endsection
