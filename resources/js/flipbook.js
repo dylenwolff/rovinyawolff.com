@@ -1,8 +1,7 @@
 import { PageFlip } from 'page-flip';
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 const root = document.querySelector('[data-flipbook]');
 const stage = root.querySelector('[data-flipbook-stage]');
 const status = root.querySelector('[data-flipbook-status]');
