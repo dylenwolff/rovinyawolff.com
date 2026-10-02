@@ -43,6 +43,7 @@ class ProjectResource extends Resource
                 TextInput::make('url')->url()->maxLength(255)->columnSpanFull(),
                 FileUpload::make('image_path')
                     ->label('Cover image')
+                    ->helperText('Uploaded images are resized and converted to AVIF automatically.')
                     ->disk('public')
                     ->directory('projects/covers')
                     ->visibility('public')
@@ -63,6 +64,7 @@ class ProjectResource extends Resource
                     ->columnSpanFull(),
                 FileUpload::make('gallery')
                     ->label('Design gallery')
+                    ->helperText('Uploaded images are resized and converted to AVIF automatically.')
                     ->disk('public')
                     ->directory('projects/gallery')
                     ->visibility('public')

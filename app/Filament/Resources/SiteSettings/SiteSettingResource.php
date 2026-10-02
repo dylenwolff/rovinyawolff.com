@@ -38,6 +38,7 @@ class SiteSettingResource extends Resource
                 TextInput::make('about_heading')->required()->maxLength(150)->columnSpanFull(),
                 FileUpload::make('profile_photo')
                     ->label('About page portrait')
+                    ->helperText('The uploaded portrait is resized and converted to AVIF automatically.')
                     ->image()
                     ->imageEditor()
                     ->disk('public')

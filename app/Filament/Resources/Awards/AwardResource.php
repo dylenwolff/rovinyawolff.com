@@ -39,7 +39,7 @@ class AwardResource extends Resource
             DatePicker::make('awarded_at')->label('Award date'),
             TextInput::make('recognition_for')->label('Recognised person or project')->maxLength(180),
             Textarea::make('description')->rows(4)->maxLength(800)->columnSpanFull(),
-            FileUpload::make('image_path')->label('Certificate or event photograph')->image()->imageEditor()->disk('public')->directory('awards')->visibility('public')->columnSpanFull(),
+            FileUpload::make('image_path')->label('Certificate or event photograph')->helperText('The uploaded image is resized and converted to AVIF automatically.')->image()->imageEditor()->disk('public')->directory('awards')->visibility('public')->columnSpanFull(),
             TextInput::make('proof_url')->label('Proof or announcement URL')->url()->columnSpanFull(),
             TextInput::make('sort_order')->numeric()->default(0)->required(),
             Toggle::make('is_featured')->label('Show on homepage')->default(false),
