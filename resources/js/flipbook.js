@@ -7,6 +7,7 @@ const stage = root.querySelector('[data-flipbook-stage]');
 const status = root.querySelector('[data-flipbook-status]');
 const pageLabel = root.querySelector('[data-flip-page]');
 const setStatus = (message) => { if (status) status.textContent = message; };
+stage.style.overflow = 'visible';
 
 (async () => {
     try {
@@ -16,7 +17,12 @@ const setStatus = (message) => { if (status) status.textContent = message; };
         const firstPage = await pdf.getPage(1);
         const base = firstPage.getViewport({ scale: 1 });
         const ratio = base.height / base.width;
-        const width = Math.min(520, Math.max(280, Math.floor(stage.clientWidth / (stage.clientWidth > 800 ? 2.15 : 1.08))));
+        const isSpread = stage.clientWidth > 800;
+        const widthFromStage = stage.clientWidth / (isSpread ? 2.15 : 1.08);
+        const availableHeight = Math.max(420, window.innerHeight - 190);
+        const widthFromHeight = availableHeight / ratio;
+        const width = Math.floor(Math.min(520, widthFromStage, widthFromHeight));
+        const height = Math.round(width * ratio);
         const pages = [];
         for (let number = 1; number <= pdf.numPages; number += 1) {
             setStatus(`Preparing page ${number} of ${pdf.numPages}…`);
@@ -30,7 +36,7 @@ const setStatus = (message) => { if (status) status.textContent = message; };
             await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
             pages.push(element);
         }
-        const book = new PageFlip(stage, { width, height: Math.round(width * ratio), size: 'stretch', minWidth: 280, maxWidth: 620, minHeight: Math.round(280 * ratio), maxHeight: Math.round(620 * ratio), showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35 });
+        const book = new PageFlip(stage, { width, height, size: 'fixed', showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, autoSize: true });
         book.loadFromHTML(pages);
         const update = () => { if (pageLabel) pageLabel.textContent = `Page ${book.getCurrentPageIndex() + 1} of ${pdf.numPages}`; };
         book.on('flip', update);
