@@ -7,6 +7,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 Route::get('/work', [HomeController::class, 'work'])->name('work');
+Route::get('/work/publications', [HomeController::class, 'publications'])->name('work.publications');
+Route::get('/work/social-media', [HomeController::class, 'socialMedia'])->name('work.social');
 Route::get('/work/{project}', [HomeController::class, 'project'])->name('work.show');
 Route::get('/contact', [HomeController::class, 'contactPage'])->name('contact');
 Route::get('/privacy', [HomeController::class, 'privacy'])->name('privacy');

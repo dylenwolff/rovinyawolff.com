@@ -31,8 +31,30 @@ class HomeController extends Controller
 
     public function work(): View
     {
+        return $this->workView();
+    }
+
+    public function publications(): View
+    {
+        return $this->workView(['publication'], 'Publication design', 'Magazines, directories, reports, and books designed as complete visual experiences.');
+    }
+
+    public function socialMedia(): View
+    {
+        return $this->workView(['social', 'poster'], 'Social media & campaigns', 'Posts, posters, event identities, and campaign visuals designed to communicate at a glance.');
+    }
+
+    private function workView(?array $types = null, string $heading = 'Selected work', string $intro = 'Explore publication design, social media visuals, posters, and campaigns.'): View
+    {
+        $query = Project::query()->where('is_published', true)->orderBy('sort_order');
+        if ($types) {
+            $query->whereIn('type', $types);
+        }
+
         return view('pages.work', $this->shared([
-            'projects' => Project::query()->where('is_published', true)->orderBy('sort_order')->get(),
+            'portfolioHeading' => $heading,
+            'portfolioIntro' => $intro,
+            'projects' => $query->get(),
         ]));
     }
 
@@ -79,6 +101,8 @@ class HomeController extends Controller
             ['loc' => route('about'), 'lastmod' => now()->toDateString()],
             ['loc' => route('services'), 'lastmod' => now()->toDateString()],
             ['loc' => route('work'), 'lastmod' => now()->toDateString()],
+            ['loc' => route('work.publications'), 'lastmod' => now()->toDateString()],
+            ['loc' => route('work.social'), 'lastmod' => now()->toDateString()],
             ['loc' => route('contact'), 'lastmod' => now()->toDateString()],
             ['loc' => route('privacy'), 'lastmod' => now()->toDateString()],
         ]);
