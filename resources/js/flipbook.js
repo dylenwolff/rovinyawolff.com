@@ -120,29 +120,6 @@ if (root) {
                 updateControls(index);
             };
 
-            const createForwardTurnLeaf = () => {
-                const source = stage.lastElementChild;
-                if (!source) return null;
-                const leaf = source.cloneNode(true);
-                const sourceCanvas = source.querySelector('canvas');
-                const leafCanvas = leaf.querySelector('canvas');
-                if (sourceCanvas && leafCanvas) {
-                    leafCanvas.width = sourceCanvas.width;
-                    leafCanvas.height = sourceCanvas.height;
-                    leafCanvas.getContext('2d').drawImage(sourceCanvas, 0, 0);
-                }
-                const pageRect = source.getBoundingClientRect();
-                const viewportRect = viewport.getBoundingClientRect();
-                leaf.className = `${leaf.className} mobile-turn-leaf`;
-                leaf.style.left = `${pageRect.left - viewportRect.left}px`;
-                leaf.style.top = `${pageRect.top - viewportRect.top}px`;
-                leaf.style.width = `${pageRect.width}px`;
-                leaf.style.height = `${pageRect.height}px`;
-                viewport.appendChild(leaf);
-                requestAnimationFrame(() => requestAnimationFrame(() => leaf.classList.add('is-active')));
-                return leaf;
-            };
-
             const goMobile = (nextIndex) => {
                 nextIndex = Math.max(0, Math.min(pdf.numPages - 1, nextIndex));
                 if (nextIndex === mobileIndex || mobileBusy) return;
@@ -156,20 +133,6 @@ if (root) {
                     return;
                 }
                 mobileBusy = true;
-                const movingForward = nextIndex > mobileIndex;
-                if (movingForward) {
-                    const turnLeaf = createForwardTurnLeaf();
-                    mobileIndex = nextIndex;
-                    stage.style.transition = 'none';
-                    mountMobileSpread(mobileIndex);
-                    stage.getBoundingClientRect();
-                    stage.style.removeProperty('transition');
-                    window.setTimeout(() => {
-                        turnLeaf?.remove();
-                        mobileBusy = false;
-                    }, 720);
-                    return;
-                }
                 stage.classList.add('is-fading-out');
                 window.setTimeout(() => {
                     mobileIndex = nextIndex;
