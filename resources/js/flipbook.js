@@ -28,6 +28,7 @@ if (root) {
             const viewportTop = viewport.getBoundingClientRect().top;
             const availableHeight = Math.max(340, window.innerHeight - viewportTop - 84);
             const mobilePeek = Math.max(34, viewport.clientWidth * 0.13);
+            const mobileSpreadGap = Math.max(56, viewport.clientWidth * 0.2);
             const widthFromStage = isMobile ? viewport.clientWidth * 0.86 : viewport.clientWidth / (isSpread ? 2.18 : 1.08);
             const widthFromHeight = availableHeight / ratio;
             const width = Math.max(230, Math.floor(isMobile
@@ -100,14 +101,18 @@ if (root) {
 
             const mobilePosition = (index) => {
                 if (index === 0) return (viewport.clientWidth - width) / 2;
-                return -(index * width) + (index % 2 === 0 ? mobilePeek : 0);
+                const gapsBeforePage = Math.ceil(index / 2);
+                const pageOffset = (index * width) + (gapsBeforePage * mobileSpreadGap);
+                return -pageOffset + (index % 2 === 0 ? mobilePeek : 0);
             };
 
             const mountMobileTrack = (index) => {
                 stage.replaceChildren();
                 stage.className = 'flipbook-stage is-mobile-track';
                 pages.forEach((page) => stage.appendChild(page));
-                stage.style.width = `${pages.length * width}px`;
+                const spreadGaps = Math.ceil(pages.length / 2);
+                stage.style.width = `${(pages.length * width) + (spreadGaps * mobileSpreadGap)}px`;
+                stage.style.setProperty('--mobile-spread-gap', `${mobileSpreadGap}px`);
                 stage.style.setProperty('--mobile-book-x', `${mobilePosition(index)}px`);
                 renderAround(index);
                 updateControls(index);
