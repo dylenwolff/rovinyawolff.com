@@ -31,18 +31,40 @@ stage.style.overflow = 'visible';
             stage.style.touchAction = 'pan-y';
         }
         const pages = [];
+        const renderJobs = new Map();
         for (let number = 1; number <= pdf.numPages; number += 1) {
-            setStatus(`Preparing page ${number} of ${pdf.numPages}…`);
-            const page = number === 1 ? firstPage : await pdf.getPage(number);
-            const viewport = page.getViewport({ scale: Math.min(2, (width * devicePixelRatio) / base.width) });
             const element = document.createElement('div');
             element.className = 'flipbook-page';
             const canvas = document.createElement('canvas');
-            canvas.width = viewport.width; canvas.height = viewport.height;
+            canvas.setAttribute('aria-label', `Publication page ${number}`);
             element.appendChild(canvas);
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
             pages.push(element);
         }
+
+        const renderPage = (index) => {
+            if (index < 0 || index >= pdf.numPages) return Promise.resolve();
+            if (renderJobs.has(index)) return renderJobs.get(index);
+            const job = (async () => {
+                const page = index === 0 ? firstPage : await pdf.getPage(index + 1);
+                const natural = page.getViewport({ scale: 1 });
+                const scale = Math.min(2, (width * devicePixelRatio) / natural.width);
+                const viewport = page.getViewport({ scale });
+                const canvas = pages[index].querySelector('canvas');
+                canvas.width = Math.ceil(viewport.width);
+                canvas.height = Math.ceil(viewport.height);
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+            })();
+            renderJobs.set(index, job);
+            return job;
+        };
+
+        const renderAround = (index) => {
+            const radius = isMobile ? 2 : 3;
+            for (let offset = -radius; offset <= radius; offset += 1) renderPage(index + offset);
+        };
+
+        setStatus('Preparing the first page…');
+        await Promise.all([renderPage(0), renderPage(1), renderPage(2)]);
         const book = new PageFlip(stage, { width, height, size: 'fixed', showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, autoSize: true });
         book.loadFromHTML(pages);
         const update = () => {
@@ -51,11 +73,16 @@ stage.style.overflow = 'visible';
             const side = page === 1 ? 'Cover' : (page % 2 === 0 ? 'Left page' : 'Right page');
             pageLabel.textContent = isMobile ? `${side} · ${page} of ${pdf.numPages}` : `Page ${page} of ${pdf.numPages}`;
         };
-        book.on('flip', update);
+        book.on('flip', () => {
+            const index = book.getCurrentPageIndex();
+            renderAround(index);
+            update();
+        });
         root.querySelector('[data-flip-prev]')?.addEventListener('click', () => book.flipPrev());
         root.querySelector('[data-flip-next]')?.addEventListener('click', () => book.flipNext());
         root.querySelector('[data-flip-fullscreen]')?.addEventListener('click', () => root.requestFullscreen?.());
-        setStatus('Drag a page, swipe, or use the buttons to browse.'); update();
+        renderAround(0);
+        setStatus(isMobile ? 'Swipe to read each left and right page in order.' : 'Drag a page, swipe, or use the buttons to browse.'); update();
     } catch (error) {
         console.error(error); setStatus('The interactive preview could not be opened.');
         const fallbackUrl = root?.getAttribute('data-pdf-url') || '#';
