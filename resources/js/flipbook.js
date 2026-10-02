@@ -10,7 +10,9 @@ const setStatus = (message) => { if (status) status.textContent = message; };
 
 (async () => {
     try {
-        const pdf = await pdfjsLib.getDocument(root.dataset.pdfUrl).promise;
+        const pdfUrl = root?.getAttribute('data-pdf-url');
+        if (!pdfUrl) throw new Error('Missing PDF URL for the flipbook.');
+        const pdf = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
         const firstPage = await pdf.getPage(1);
         const base = firstPage.getViewport({ scale: 1 });
         const ratio = base.height / base.width;
@@ -38,6 +40,7 @@ const setStatus = (message) => { if (status) status.textContent = message; };
         setStatus('Drag a page, swipe, or use the buttons to browse.'); update();
     } catch (error) {
         console.error(error); setStatus('The interactive preview could not be opened.');
-        stage.innerHTML = `<a class="button-primary mt-5" target="_blank" rel="noreferrer" href="${root.dataset.pdfUrl}">Open PDF</a>`;
+        const fallbackUrl = root?.getAttribute('data-pdf-url') || '#';
+        stage.innerHTML = `<a class="button-primary mt-5" target="_blank" rel="noreferrer" href="${fallbackUrl}">Open PDF</a>`;
     }
 })();
