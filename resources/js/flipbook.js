@@ -30,7 +30,9 @@ if (root) {
             const mobilePeek = Math.max(34, viewport.clientWidth * 0.13);
             const widthFromStage = isMobile ? viewport.clientWidth * 0.86 : viewport.clientWidth / (isSpread ? 2.18 : 1.08);
             const widthFromHeight = availableHeight / ratio;
-            const width = Math.max(230, Math.floor(Math.min(520, widthFromStage, widthFromHeight)));
+            const width = Math.max(230, Math.floor(isMobile
+                ? Math.min(520, widthFromStage)
+                : Math.min(520, widthFromStage, widthFromHeight)));
             const height = Math.round(width * ratio);
             const pages = [];
             const renderJobs = new Map();
