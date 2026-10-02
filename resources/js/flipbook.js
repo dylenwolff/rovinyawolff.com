@@ -133,19 +133,19 @@ if (root) {
                     return;
                 }
                 mobileBusy = true;
-                stage.classList.add('is-fading-out');
+                const movingForward = nextIndex > mobileIndex;
+                const targetPosition = mobilePosition(nextIndex);
+                stage.style.setProperty('--mobile-book-x', `${movingForward ? viewport.clientWidth : -(width * 2)}px`);
                 window.setTimeout(() => {
                     mobileIndex = nextIndex;
                     stage.style.transition = 'none';
                     mountMobileSpread(mobileIndex);
-                    stage.classList.add('is-fading-in');
+                    stage.style.setProperty('--mobile-book-x', `${movingForward ? targetPosition - width : targetPosition + viewport.clientWidth}px`);
                     stage.getBoundingClientRect();
-                    requestAnimationFrame(() => requestAnimationFrame(() => {
-                        stage.style.removeProperty('transition');
-                        requestAnimationFrame(() => stage.classList.remove('is-fading-in'));
-                    }));
-                    window.setTimeout(() => { mobileBusy = false; }, 320);
-                }, 260);
+                    stage.style.removeProperty('transition');
+                    requestAnimationFrame(() => requestAnimationFrame(() => stage.style.setProperty('--mobile-book-x', `${targetPosition}px`)));
+                    window.setTimeout(() => { mobileBusy = false; }, 500);
+                }, 380);
             };
 
             setStatus('Opening publication…');
