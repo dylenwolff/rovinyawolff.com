@@ -7,6 +7,7 @@ const root = document.querySelector('[data-flipbook]');
 
 if (root) {
     const viewport = root.querySelector('[data-flipbook-viewport]');
+    const zoomSurface = root.querySelector('[data-flipbook-zoom]');
     const stage = root.querySelector('[data-flipbook-stage]');
     const status = root.querySelector('[data-flipbook-status]');
     const pageLabel = root.querySelector('[data-flip-page]');
@@ -39,6 +40,8 @@ if (root) {
             stage.style.width = `${isSpread ? width * 2 : width}px`;
             stage.style.height = `${height}px`;
             stage.style.touchAction = isMobile ? 'pan-y' : 'none';
+            zoomSurface.style.width = stage.style.width;
+            zoomSurface.style.height = stage.style.height;
 
             for (let number = 1; number <= pdf.numPages; number += 1) {
                 const element = document.createElement('div');
@@ -110,8 +113,8 @@ if (root) {
 
             const applyZoom = (nextZoom) => {
                 zoom = Math.max(1, Math.min(2, nextZoom));
-                stage.style.setProperty('--flipbook-zoom', zoom);
-                stage.classList.toggle('is-zoomed', zoom > 1);
+                zoomSurface.style.setProperty('--flipbook-zoom', zoom);
+                zoomSurface.classList.toggle('is-zoomed', zoom > 1);
                 root.querySelector('[data-flip-zoom-out]')?.toggleAttribute('disabled', zoom === 1);
                 root.querySelector('[data-flip-zoom-in]')?.toggleAttribute('disabled', zoom === 2);
                 root.querySelector('[data-flip-zoom-value]').textContent = `${Math.round(zoom * 100)}%`;
