@@ -27,13 +27,10 @@ find "$pdf_root" -maxdepth 1 -type f -iname '*.pdf' -print0 | while IFS= read -r
         -sOutputFile="$scratch/page-%03d.png" "$pdf"
 
     rm -f "$output"/page-*.avif
-    export output
-    find "$scratch" -maxdepth 1 -type f -name 'page-*.png' -print0 | \
-        xargs -0 -P "${AVIF_JOBS:-4}" -I '{}' bash -c '
-            source="$1"
-            name="$(basename "${source%.png}").avif"
-            convert "$source" -strip -quality 48 -define heic:speed=8 "$output/$name"
-        ' _ '{}'
+    for source in "$scratch"/page-*.png; do
+        name="$(basename "${source%.png}").avif"
+        convert "$source" -strip -quality 48 -define heic:speed=6 "$output/$name"
+    done
 
     first="$(find "$output" -maxdepth 1 -type f -name 'page-*.avif' | sort | head -n 1)"
     dimensions="$(identify -format '%w %h' "$first")"
