@@ -11,7 +11,7 @@ db_password=$(openssl rand -base64 30 | tr -dc A-Za-z0-9 | head -c 28)
 if ! /usr/local/hestia/bin/v-list-databases rovinyawolff plain | awk '{print $1}' | grep -qx rovinyawolff_portfolio; then
     /usr/local/hestia/bin/v-add-database rovinyawolff portfolio portfolio "$db_password" mysql localhost utf8mb4
 else
-    /usr/local/hestia/bin/v-change-database-password rovinyawolff portfolio "$db_password"
+    /usr/local/hestia/bin/v-change-database-password rovinyawolff rovinyawolff_portfolio "$db_password"
 fi
 
 if [[ ! -f .env ]]; then
