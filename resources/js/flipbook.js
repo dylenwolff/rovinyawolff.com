@@ -17,13 +17,19 @@ stage.style.overflow = 'visible';
         const firstPage = await pdf.getPage(1);
         const base = firstPage.getViewport({ scale: 1 });
         const ratio = base.height / base.width;
-        const isSpread = stage.clientWidth > 800;
+        const isMobile = window.matchMedia('(max-width: 767px)').matches;
+        const isSpread = !isMobile && stage.clientWidth > 800;
         const widthFromStage = stage.clientWidth / (isSpread ? 2.15 : 1.08);
         const stageTop = stage.getBoundingClientRect().top;
         const availableHeight = Math.max(320, window.innerHeight - stageTop - 72);
         const widthFromHeight = availableHeight / ratio;
         const width = Math.floor(Math.min(520, widthFromStage, widthFromHeight));
         const height = Math.round(width * ratio);
+        if (isMobile) {
+            stage.style.width = `${width}px`;
+            stage.style.maxWidth = `${width}px`;
+            stage.style.touchAction = 'pan-y';
+        }
         const pages = [];
         for (let number = 1; number <= pdf.numPages; number += 1) {
             setStatus(`Preparing page ${number} of ${pdf.numPages}…`);
@@ -39,7 +45,12 @@ stage.style.overflow = 'visible';
         }
         const book = new PageFlip(stage, { width, height, size: 'fixed', showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, autoSize: true });
         book.loadFromHTML(pages);
-        const update = () => { if (pageLabel) pageLabel.textContent = `Page ${book.getCurrentPageIndex() + 1} of ${pdf.numPages}`; };
+        const update = () => {
+            if (!pageLabel) return;
+            const page = book.getCurrentPageIndex() + 1;
+            const side = page === 1 ? 'Cover' : (page % 2 === 0 ? 'Left page' : 'Right page');
+            pageLabel.textContent = isMobile ? `${side} · ${page} of ${pdf.numPages}` : `Page ${page} of ${pdf.numPages}`;
+        };
         book.on('flip', update);
         root.querySelector('[data-flip-prev]')?.addEventListener('click', () => book.flipPrev());
         root.querySelector('[data-flip-next]')?.addEventListener('click', () => book.flipNext());
