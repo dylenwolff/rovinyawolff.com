@@ -120,36 +120,11 @@ if (root) {
                 updateControls(index);
             };
 
-            const cloneRenderedPage = (page) => {
-                const clone = page.cloneNode(true);
-                const source = page.querySelector('canvas');
-                const target = clone.querySelector('canvas');
-                if (source && target) {
-                    target.width = source.width;
-                    target.height = source.height;
-                    target.getContext('2d').drawImage(source, 0, 0);
-                }
-                return clone;
-            };
-
-            const createTurnLayer = (movingForward) => {
-                const layer = document.createElement('div');
-                layer.className = `mobile-turn-layer ${movingForward ? 'turns-forward' : 'turns-backward'}`;
-                layer.style.width = `${stage.children.length * width}px`;
-                layer.style.height = `${height}px`;
-                layer.style.setProperty('--turn-start-x', `${mobilePosition(mobileIndex)}px`);
-                [...stage.children].forEach((page) => layer.appendChild(cloneRenderedPage(page)));
-                viewport.appendChild(layer);
-                requestAnimationFrame(() => requestAnimationFrame(() => layer.classList.add('is-active')));
-                return layer;
-            };
-
             const goMobile = (nextIndex) => {
                 nextIndex = Math.max(0, Math.min(pdf.numPages - 1, nextIndex));
                 if (nextIndex === mobileIndex || mobileBusy) return;
                 const oldSpread = mobileIndex === 0 ? -1 : Math.floor((mobileIndex - 1) / 2);
                 const newSpread = nextIndex === 0 ? -1 : Math.floor((nextIndex - 1) / 2);
-                const movingForward = nextIndex > mobileIndex;
                 if (oldSpread === newSpread) {
                     mobileIndex = nextIndex;
                     stage.style.setProperty('--mobile-book-x', `${mobilePosition(mobileIndex)}px`);
@@ -158,22 +133,17 @@ if (root) {
                     return;
                 }
                 mobileBusy = true;
-                const turnLayer = createTurnLayer(movingForward);
-                mobileIndex = nextIndex;
-                const targetPosition = mobilePosition(mobileIndex);
-                const entryOffset = movingForward ? width - mobilePeek : -(width - mobilePeek);
-                stage.style.transition = 'none';
-                mountMobileSpread(mobileIndex);
-                stage.style.setProperty('--mobile-book-x', `${targetPosition + entryOffset}px`);
-                stage.getBoundingClientRect();
-                stage.style.removeProperty('transition');
-                requestAnimationFrame(() => requestAnimationFrame(() => {
-                    stage.style.setProperty('--mobile-book-x', `${targetPosition}px`);
-                }));
+                stage.classList.add('is-fading-out');
                 window.setTimeout(() => {
-                    turnLayer.remove();
-                    mobileBusy = false;
-                }, 720);
+                    mobileIndex = nextIndex;
+                    mountMobileSpread(mobileIndex);
+                    stage.classList.add('is-fading-in');
+                    stage.getBoundingClientRect();
+                    requestAnimationFrame(() => requestAnimationFrame(() => {
+                        stage.classList.remove('is-fading-in');
+                    }));
+                    window.setTimeout(() => { mobileBusy = false; }, 320);
+                }, 260);
             };
 
             setStatus('Opening publication…');
