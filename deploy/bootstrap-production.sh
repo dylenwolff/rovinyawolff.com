@@ -62,4 +62,4 @@ done
 
 nginx -t
 systemctl reload nginx
-echo "Production deployment complete: $(git rev-parse --short HEAD)"
+echo "Production deployment complete: $(git -c safe.directory="$app_dir" rev-parse --short HEAD)"

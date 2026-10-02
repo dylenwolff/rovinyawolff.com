@@ -19,7 +19,7 @@ trap cleanup EXIT
 
 export GIT_SSH_COMMAND="ssh -i $deploy_key -o IdentitiesOnly=yes"
 
-git pull --ff-only origin main
+git -c safe.directory="$app_dir" pull --ff-only origin main
 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 php artisan livewire:publish --assets
 npm ci
@@ -32,4 +32,4 @@ php artisan optimize
 php artisan up
 
 trap - EXIT
-echo "Production deployment complete: $(git rev-parse --short HEAD)"
+echo "Production deployment complete: $(git -c safe.directory="$app_dir" rev-parse --short HEAD)"
