@@ -93,8 +93,7 @@ if (root) {
 
             const updateControls = (index) => {
                 const page = index + 1;
-                const side = page === 1 ? 'Cover' : (page % 2 === 0 ? 'Left page' : 'Right page');
-                if (pageLabel) pageLabel.textContent = isMobile ? `${side} · ${page} / ${pdf.numPages}` : `${page} / ${pdf.numPages}`;
+                if (pageLabel) pageLabel.textContent = `${page} / ${pdf.numPages}`;
                 root.querySelector('[data-flip-prev]')?.toggleAttribute('disabled', page <= 1);
                 root.querySelector('[data-flip-next]')?.toggleAttribute('disabled', page >= pdf.numPages);
             };
@@ -139,7 +138,15 @@ if (root) {
                     if (pointerStart === null) return;
                     const delta = event.clientX - pointerStart;
                     pointerStart = null;
-                    if (Math.abs(delta) >= 42) goMobile(mobileIndex + (delta < 0 ? 1 : -1));
+                    if (Math.abs(delta) >= 42) {
+                        goMobile(mobileIndex + (delta < 0 ? 1 : -1));
+                        return;
+                    }
+                    if (zoom > 1 || event.target.closest('button, a, .flipbook-thumbnails')) return;
+                    const bounds = viewport.getBoundingClientRect();
+                    const position = (event.clientX - bounds.left) / bounds.width;
+                    if (position <= 0.35) goMobile(mobileIndex - 1);
+                    if (position >= 0.65) goMobile(mobileIndex + 1);
                 });
             } else {
                 book = new PageFlip(stage, { width, height, size: 'fixed', showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: 0.55, flippingTime: 850, drawShadow: true, autoSize: false, clickEventForward: true, swipeDistance: 24 });
@@ -163,7 +170,7 @@ if (root) {
                 root.querySelector('[data-flip-zoom-out]')?.toggleAttribute('disabled', zoom === 1);
                 root.querySelector('[data-flip-zoom-in]')?.toggleAttribute('disabled', zoom === 2);
                 root.querySelector('[data-flip-zoom-value]').textContent = `${Math.round(zoom * 100)}%`;
-                setStatus(zoom > 1 ? 'Drag the page area to inspect the design.' : (isMobile ? 'Swipe left and right across each two-page spread.' : 'Drag a page corner or use the arrows.'));
+                setStatus(zoom > 1 ? 'Drag the page area to inspect the design.' : (isMobile ? 'Tap either edge or swipe to browse.' : 'Drag a page corner or use the arrows.'));
             };
 
             const buildThumbnails = async () => {
@@ -210,7 +217,7 @@ if (root) {
             });
             renderAround(currentIndex());
             applyZoom(1);
-            setStatus(isMobile ? 'Swipe: left page, slide right, then turn to the next spread.' : 'Drag a page corner, swipe, or use the arrows.');
+            setStatus(isMobile ? 'Tap either edge or swipe to browse.' : 'Drag a page corner, swipe, or use the arrows.');
             updateControls(currentIndex());
             root.classList.add('is-ready');
         } catch (error) {
