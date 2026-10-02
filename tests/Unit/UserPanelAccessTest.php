@@ -12,7 +12,8 @@ class UserPanelAccessTest extends TestCase
     #[Test]
     public function the_site_owner_can_access_the_admin_panel(): void
     {
-        $user = new User(['email' => 'dylenaw@gmail.com']);
+        config(['app.admin_email' => 'rovinyask@gmail.com']);
+        $user = new User(['email' => 'rovinyask@gmail.com']);
         $panel = Panel::make()->id('admin');
 
         $this->assertTrue($user->canAccessPanel($panel));

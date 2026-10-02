@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-app_dir=/home/dylenaw/web/dylenwolff.com/public_html/app
-deploy_key=/home/dylenaw/.ssh/id_ed25519_dylenwolff_com_deploy
+app_dir=/home/rovinyawolff/web/rovinyawolff.com/public_html/app
+deploy_key=/home/rovinyawolff/.ssh/rovinyawolff_github
 
 cd "$app_dir"
 
-exec 9>/tmp/dylenwolff-production-deploy.lock
+exec 9>/tmp/rovinyawolff-production-deploy.lock
 if ! flock -n 9; then
     echo "Another deployment is already running." >&2
     exit 1
