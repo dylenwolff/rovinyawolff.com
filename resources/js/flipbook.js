@@ -100,22 +100,15 @@ if (root) {
 
             const mobilePosition = (index) => {
                 if (index === 0) return (viewport.clientWidth - width) / 2;
-                return index % 2 === 1 ? 0 : -(width - mobilePeek);
+                return -(index * width) + (index % 2 === 0 ? mobilePeek : 0);
             };
 
-            const mountMobileSpread = (index, fromRight = false) => {
+            const mountMobileTrack = (index) => {
                 stage.replaceChildren();
-                stage.className = 'flipbook-stage is-mobile-spread';
-                if (index === 0) {
-                    stage.appendChild(pages[0]);
-                    stage.classList.add('is-cover');
-                } else {
-                    const spreadStart = index % 2 === 1 ? index : index - 1;
-                    stage.appendChild(pages[spreadStart]);
-                    if (pages[spreadStart + 1]) stage.appendChild(pages[spreadStart + 1]);
-                }
-                stage.style.setProperty('--mobile-book-x', `${fromRight ? viewport.clientWidth : mobilePosition(index)}px`);
-                if (fromRight) requestAnimationFrame(() => requestAnimationFrame(() => stage.style.setProperty('--mobile-book-x', `${mobilePosition(index)}px`)));
+                stage.className = 'flipbook-stage is-mobile-track';
+                pages.forEach((page) => stage.appendChild(page));
+                stage.style.width = `${pages.length * width}px`;
+                stage.style.setProperty('--mobile-book-x', `${mobilePosition(index)}px`);
                 renderAround(index);
                 updateControls(index);
             };
@@ -123,29 +116,10 @@ if (root) {
             const goMobile = (nextIndex) => {
                 nextIndex = Math.max(0, Math.min(pdf.numPages - 1, nextIndex));
                 if (nextIndex === mobileIndex || mobileBusy) return;
-                const oldSpread = mobileIndex === 0 ? -1 : Math.floor((mobileIndex - 1) / 2);
-                const newSpread = nextIndex === 0 ? -1 : Math.floor((nextIndex - 1) / 2);
-                if (oldSpread === newSpread) {
-                    mobileIndex = nextIndex;
-                    stage.style.setProperty('--mobile-book-x', `${mobilePosition(mobileIndex)}px`);
-                    renderAround(mobileIndex);
-                    updateControls(mobileIndex);
-                    return;
-                }
-                mobileBusy = true;
-                const movingForward = nextIndex > mobileIndex;
-                const targetPosition = mobilePosition(nextIndex);
-                stage.style.setProperty('--mobile-book-x', `${movingForward ? viewport.clientWidth : -(width * 2)}px`);
-                window.setTimeout(() => {
-                    mobileIndex = nextIndex;
-                    stage.style.transition = 'none';
-                    mountMobileSpread(mobileIndex);
-                    stage.style.setProperty('--mobile-book-x', `${movingForward ? targetPosition - width : targetPosition + viewport.clientWidth}px`);
-                    stage.getBoundingClientRect();
-                    stage.style.removeProperty('transition');
-                    requestAnimationFrame(() => requestAnimationFrame(() => stage.style.setProperty('--mobile-book-x', `${targetPosition}px`)));
-                    window.setTimeout(() => { mobileBusy = false; }, 500);
-                }, 380);
+                mobileIndex = nextIndex;
+                stage.style.setProperty('--mobile-book-x', `${mobilePosition(mobileIndex)}px`);
+                renderAround(mobileIndex);
+                updateControls(mobileIndex);
             };
 
             setStatus('Opening publication…');
@@ -153,7 +127,7 @@ if (root) {
 
             if (isMobile) {
                 root.classList.add('uses-mobile-spreads');
-                mountMobileSpread(0);
+                mountMobileTrack(0);
                 let pointerStart = null;
                 viewport.addEventListener('pointerdown', (event) => { pointerStart = event.clientX; });
                 viewport.addEventListener('pointerup', (event) => {
