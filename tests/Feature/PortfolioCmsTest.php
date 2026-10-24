@@ -17,7 +17,8 @@ class PortfolioCmsTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('sharing and keeping.')
+            ->assertSee('Stories,')
+            ->assertSee('visually.')
             ->assertSee('Publication design');
     }
 
