@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->domain(config('app.admin_domain', 'admin.rovinyawolff.com'))
             ->path('')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login(OtpLogin::class)
             ->brandName('Rovinya Wolff Studio')
             ->colors([
