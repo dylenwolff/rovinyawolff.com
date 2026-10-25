@@ -12,6 +12,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StudioOverview extends StatsOverviewWidget
 {
+    protected static ?int $sort = 1;
+
     protected ?string $heading = 'Studio overview';
 
     protected ?string $description = 'Portfolio publishing and client outreach at a glance.';

@@ -10,6 +10,8 @@ use Filament\Widgets\TableWidget;
 
 class PriorityFollowUps extends TableWidget
 {
+    protected static ?int $sort = 3;
+
     protected static ?string $heading = 'Priority follow-ups';
 
     protected int|string|array $columnSpan = 'full';
