@@ -1,0 +1,46 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Filament\Pages\Auth\OtpLogin;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Livewire\Livewire;
+use Tests\TestCase;
+
+class AdminOtpLoginTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'dylenaw@gmail.com']]);
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+    }
+
+    public function test_an_allowed_email_can_request_a_sign_in_code(): void
+    {
+        Mail::fake();
+
+        Livewire::test(OtpLogin::class)
+            ->set('data.email', 'hello@rovinyawolff.com')
+            ->call('authenticate')
+            ->assertSet('codeRequested', true)
+            ->assertSet('challengeEmail', 'hello@rovinyawolff.com');
+
+        $this->assertTrue(Cache::has('admin-otp:'.hash('sha256', 'hello@rovinyawolff.com')));
+    }
+
+    public function test_an_unlisted_email_cannot_request_a_sign_in_code(): void
+    {
+        Mail::fake();
+
+        Livewire::test(OtpLogin::class)
+            ->set('data.email', 'someone@example.com')
+            ->call('authenticate')
+            ->assertHasErrors(['data.email']);
+
+        Mail::assertNothingSent();
+    }
+}

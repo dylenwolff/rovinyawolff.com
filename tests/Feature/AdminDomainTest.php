@@ -20,10 +20,10 @@ class AdminDomainTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_admin_password_reset_request_page_is_available(): void
+    public function test_admin_password_reset_is_not_exposed_for_otp_login(): void
     {
         $response = $this->get('http://admin.rovinyawolff.com/password-reset/request');
 
-        $response->assertOk();
+        $response->assertNotFound();
     }
 }

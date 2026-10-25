@@ -12,8 +12,18 @@ class UserPanelAccessTest extends TestCase
     #[Test]
     public function the_site_owner_can_access_the_admin_panel(): void
     {
-        config(['app.admin_email' => 'rovinyask@gmail.com']);
-        $user = new User(['email' => 'rovinyask@gmail.com']);
+        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'dylenaw@gmail.com']]);
+        $user = new User(['email' => 'hello@rovinyawolff.com']);
+        $panel = Panel::make()->id('admin');
+
+        $this->assertTrue($user->canAccessPanel($panel));
+    }
+
+    #[Test]
+    public function the_second_allowed_administrator_can_access_the_admin_panel(): void
+    {
+        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'dylenaw@gmail.com']]);
+        $user = new User(['email' => 'DYLENAW@GMAIL.COM']);
         $panel = Panel::make()->id('admin');
 
         $this->assertTrue($user->canAccessPanel($panel));
@@ -22,6 +32,7 @@ class UserPanelAccessTest extends TestCase
     #[Test]
     public function other_users_cannot_access_the_admin_panel(): void
     {
+        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'dylenaw@gmail.com']]);
         $user = new User(['email' => 'someone@example.com']);
         $panel = Panel::make()->id('admin');
 

@@ -55,7 +55,10 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'admin_domain' => env('ADMIN_DOMAIN', 'admin.rovinyawolff.com'),
-    'admin_email' => env('ADMIN_EMAIL', 'hello@rovinyawolff.com'),
+    'admin_emails' => array_values(array_filter(array_map(
+        static fn (string $email): string => strtolower(trim($email)),
+        explode(',', (string) env('ADMIN_EMAILS', 'hello@rovinyawolff.com,dylenaw@gmail.com')),
+    ))),
 
     /*
     |--------------------------------------------------------------------------
