@@ -50,4 +50,14 @@ class AdminOtpLoginTest extends TestCase
             ->assertOk()
             ->assertSee('Dashboard');
     }
+
+    public function test_an_authenticated_admin_can_open_a_resource_form(): void
+    {
+        $user = User::factory()->create(['email' => 'rovinyask@gmail.com']);
+
+        $this->actingAs($user)
+            ->get('http://admin.rovinyawolff.com/organizations/create')
+            ->assertOk()
+            ->assertSee('Add new record');
+    }
 }

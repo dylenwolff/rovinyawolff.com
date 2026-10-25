@@ -1,4 +1,6 @@
-@extends('admin.layout') @section('title','Dashboard') @section('content')
-<div class="mb-8"><p class="text-sm font-bold uppercase tracking-[.18em] text-primary">Studio overview</p><h1 class="mt-2 text-4xl font-black">Dashboard</h1><p class="mt-2 text-base-content/60">Manage the portfolio, enquiries, prospects and outreach from one place.</p></div>
-<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">@foreach($resources as $key=>$config)<a class="card border border-base-content/10 bg-base-100 transition hover:-translate-y-1 hover:border-primary/60" href="{{ route('admin.resources.index',$key) }}"><div class="card-body"><div class="flex items-center justify-between"><h2 class="card-title text-base">{{ $config['label'] }}</h2><span class="badge badge-primary badge-outline">{{ $config['model']::count() }}</span></div><p class="text-sm text-base-content/55">Open and manage records →</p></div></a>@endforeach</div>
+@extends('admin.layout')
+@section('title','Dashboard')
+@section('content')
+<header class="admin-page-header"><div><p class="admin-eyebrow">Studio overview</p><h1>Good to see you.</h1><p>Everything for the portfolio and client pipeline, in one calm workspace.</p></div><a class="admin-primary-button" href="{{ route('admin.resources.create','organizations') }}"><span>＋</span> Add prospect</a></header>
+<div class="admin-dashboard-grid">@foreach($resources as $key=>$config)<a class="admin-dashboard-card" href="{{ route('admin.resources.index',$key) }}"><span class="admin-card-index">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span><div><strong>{{ $config['model']::count() }}</strong><h2>{{ $config['label'] }}</h2><p>Open and manage records</p></div><i>↗</i></a>@endforeach</div>
 @endsection
