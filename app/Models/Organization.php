@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'industry', 'website', 'email', 'phone', 'status', 'notes'])]
+#[Fillable(['name', 'industry', 'country', 'website', 'email', 'phone', 'status', 'notes'])]
 class Organization extends Model
 {
     public function contacts(): HasMany
