@@ -57,7 +57,7 @@ return [
     'admin_domain' => env('ADMIN_DOMAIN', 'admin.rovinyawolff.com'),
     'admin_emails' => array_values(array_filter(array_map(
         static fn (string $email): string => strtolower(trim($email)),
-        explode(',', (string) env('ADMIN_EMAILS', 'hello@rovinyawolff.com,dylenaw@gmail.com')),
+        explode(',', (string) env('ADMIN_EMAILS', 'hello@rovinyawolff.com,rovinyask@gmail.com')),
     ))),
 
     /*

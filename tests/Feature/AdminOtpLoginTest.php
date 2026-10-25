@@ -15,7 +15,7 @@ class AdminOtpLoginTest extends TestCase
     {
         parent::setUp();
 
-        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'dylenaw@gmail.com']]);
+        config(['app.admin_emails' => ['hello@rovinyawolff.com', 'rovinyask@gmail.com']]);
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
 

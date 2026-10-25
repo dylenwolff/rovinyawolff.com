@@ -146,7 +146,7 @@ class OtpLogin extends Login
         $user = User::query()->firstOrCreate(
             ['email' => $email],
             [
-                'name' => $email === 'hello@rovinyawolff.com' ? 'Rovinya Wolff' : 'Dylen Wolff',
+                'name' => 'Rovinya Wolff',
                 'password' => Str::random(64),
                 'email_verified_at' => now(),
             ],
