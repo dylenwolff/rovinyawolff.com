@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
+use App\Services\OtpMailer;
 use Filament\Actions\Action;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Auth\Pages\Login;
@@ -14,7 +15,6 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -84,12 +84,7 @@ class OtpLogin extends Login
         Cache::put($this->cacheKey($email), Hash::make($code), now()->addMinutes(10));
 
         try {
-            Mail::raw(
-                "Your Rovinya Wolff Studio admin sign-in code is {$code}.\n\nThis code expires in 10 minutes. If you did not request it, you can ignore this email.",
-                fn ($message) => $message
-                    ->to($email)
-                    ->subject('Your admin sign-in code'),
-            );
+            app(OtpMailer::class)->send($email, $code);
         } catch (Throwable $exception) {
             report($exception);
             Cache::forget($this->cacheKey($email));

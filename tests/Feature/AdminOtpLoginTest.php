@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Filament\Pages\Auth\OtpLogin;
+use App\Services\OtpMailer;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -21,7 +21,10 @@ class AdminOtpLoginTest extends TestCase
 
     public function test_an_allowed_email_can_request_a_sign_in_code(): void
     {
-        Mail::fake();
+        $mailer = $this->mock(OtpMailer::class);
+        $mailer->shouldReceive('send')
+            ->once()
+            ->with('hello@rovinyawolff.com', \Mockery::type('string'));
 
         Livewire::test(OtpLogin::class)
             ->set('data.email', 'hello@rovinyawolff.com')
@@ -34,13 +37,13 @@ class AdminOtpLoginTest extends TestCase
 
     public function test_an_unlisted_email_cannot_request_a_sign_in_code(): void
     {
-        Mail::fake();
+        $mailer = $this->mock(OtpMailer::class);
+        $mailer->shouldNotReceive('send');
 
         Livewire::test(OtpLogin::class)
             ->set('data.email', 'someone@example.com')
             ->call('authenticate')
             ->assertHasErrors(['data.email']);
 
-        Mail::assertNothingSent();
     }
 }
